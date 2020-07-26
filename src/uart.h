@@ -16,21 +16,6 @@
 
 //-----------------------------------------------------------------------------
 
-typedef struct
-{
-	uint16_t rx_ints;
-	uint16_t rx_bytes;
-	uint16_t rx_parity_error;
-	uint16_t rx_framing_error;
-	uint16_t rx_overrun_error;
-	uint16_t rx_overflow_error;
-	uint16_t tx_ints;
-	uint16_t tx_bytes;
-
-} UART_STATS;
-
-//-----------------------------------------------------------------------------
-
 void uart_rx_isr(void);
 void uart_tx_isr(void);
 

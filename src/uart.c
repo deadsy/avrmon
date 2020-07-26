@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------------
 
 #include <avr/io.h>
-#include <avr/pgmspace.h>
 #include <avr/interrupt.h>
 
 #include "common.h"
@@ -27,7 +26,6 @@ static volatile uint8_t tx_rd;
 static uint8_t tx_wr;
 static uint8_t rx_rd;
 static volatile uint8_t rx_wr;
-static UART_STATS stats;
 
 //-----------------------------------------------------------------------------
 
@@ -48,25 +46,20 @@ int uart_init(void){
 void uart_rx_isr(void){
 	uint8_t status;
 
-	stats.rx_ints++;
-
 	while (((status = UCSR0A) & _BV(RXC0)) != 0)
 	{
 		uint8_t c = UDR0;
 
 		// Check errors
 		if (status & _BV(UPE0)) {
-			stats.rx_parity_error++;
 			break;
 		}
 
 		if (status & _BV(FE0)) {
-			stats.rx_framing_error++;
 			break;
 		}
 
 		if (status & _BV(DOR0)) {
-			stats.rx_overrun_error++;
 			break;
 		}
 
@@ -74,9 +67,6 @@ void uart_rx_isr(void){
 		if (inc_mod(rx_wr, (UART_RX_BUFSIZE - 1)) != rx_rd) {
 			rx_buffer[rx_wr] = c;
 			rx_wr = inc_mod(rx_wr, (UART_RX_BUFSIZE - 1));
-			stats.rx_bytes++;
-		}else {
-			stats.rx_overflow_error++;
 		}
 	}
 }
@@ -85,10 +75,7 @@ void uart_rx_isr(void){
 // USART, Data Register Empty
 
 void uart_tx_isr(void){
-	stats.tx_ints++;
-
 	if (tx_rd != tx_wr) {
-		stats.tx_bytes++;
 		UDR0 = tx_buffer[tx_rd];
 		tx_rd = inc_mod(tx_rd, (UART_TX_BUFSIZE - 1));
 	}else {
