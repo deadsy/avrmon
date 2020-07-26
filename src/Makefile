@@ -10,6 +10,7 @@ F_CPU = 16000000UL
 #==============================================================================
 
 C_SRC = main.c \
+        isr.c \
         uart.c \
 
 OBJ = $(C_SRC:%.c=%.o) $(A_SRC:%.S=%.o) 
@@ -59,7 +60,7 @@ format:
 
 .PHONY: program
 program:
-	$(AVRDUDE) -p $(MCU) -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER) -v -B 1 -U flash:w:$(OUTPUT).hex
+	$(AVRDUDE) -p $(MCU) -c $(AVRDUDE_PROGRAMMER) -q -U flash:w:$(OUTPUT).hex
 
 $(OUTPUT).elf: $(OBJ)
 	$(X_CC) $(CFLAGS) $(OBJ) --output $@

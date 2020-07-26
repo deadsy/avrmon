@@ -17,11 +17,19 @@
 
 //-----------------------------------------------------------------------------
 
+#define RADIANS_2_DEGREES (180.0/M_PI)
+#define DEGREES_2_RADIANS (M_PI/180.0)
+#define GRAVITY 9.80665
+
+//-----------------------------------------------------------------------------
+
 #define INIT(function) \
 	if (function() != 0) { \
 		printf_P(PSTR("%s(): fail\n"), #function); \
 		init_fails += 1; \
 	}
+
+#define inc_mod(a, b) ((a + 1) & b)
 
 //-----------------------------------------------------------------------------
 // bit operations on ports
